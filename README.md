@@ -9,7 +9,7 @@ Initial steps for the person who cookiecutter cloned this repo:
 - [x] Once: Initialize git repo with `git init`.
 - [ ] Optional, once: Initialize DVC with `dvc init`.
 - [ ] Optional, once: Set up a [dvc remote](https://dvc.org/doc/command-reference/remote).
-- [ ] Go through and delete files we don't want.
+- [x] Go through and delete files we don't want.
 
 Everyone who clones this repo:
 - Set up a python virtual environment and automate its use when in this directory, using your preferred method. E.g., with pyenv-virtualenv: ``pyenv virtualenv 3.11 posture_bot `` then `echo posture_bot > .python-version`

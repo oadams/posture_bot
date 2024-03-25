@@ -9,8 +9,8 @@ description = "Penalize bad posture."
 readme = "README.md"
 authors = [{ name = "Oliver Adams"}]
 license = { file = "LICENSE" }
-dependencies = []
+dependencies = ["opencv-python"]
 requires-python = ">=3.11"
 
 [project.optional-dependencies]
-dev = ["pytest", "nox", "ruff", "coverage", "pytest-cov", "mypy", "dvc", "pre-commit"]
+dev = ["pytest", "nox", "ruff", "coverage", "pytest-cov", "mypy", "pre-commit"]
