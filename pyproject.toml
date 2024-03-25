@@ -1,0 +1,16 @@
+[build-system]
+requires      = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "posture_bot"
+version = "0.1.0"
+description = "Penalize bad posture."
+readme = "README.md"
+authors = [{ name = "Oliver Adams"}]
+license = { file = "LICENSE" }
+dependencies = []
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = ["pytest", "nox", "ruff", "coverage", "pytest-cov", "mypy", "dvc", "pre-commit"]
