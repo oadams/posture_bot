@@ -1,4 +1,3 @@
-import time
 from datetime import datetime
 
 import cv2 as cv
@@ -16,10 +15,8 @@ while cap.isOpened():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     cv.imwrite(f"data/raw/frame_{timestamp}.png", frame)
 
-    time.sleep(1)
-
     cv.imshow("frame", frame)
-    if cv.waitKey(1) == ord("q"):
+    if cv.waitKey(1000) == ord("q"):
         break
 
 # Release everything if job is finished
