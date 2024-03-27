@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import torch.utils.data
+import torch.nn.functional as F
 from torchvision.io import read_image
 from torchvision.models import resnet50, ResNet50_Weights
 import lightning as L
@@ -21,19 +22,16 @@ class PostureBot(L.LightningModule):
     def forward(self, x):
         return self.model(x)
 
-
-"""     def training_step(self, batch, batch_idx):
+    def training_step(self, batch, batch_idx):
         # training_step defines the train loop.
         x, y = batch
-        x = x.view(x.size(0), -1)
-        z = self.encoder(x)
-        x_hat = self.decoder(z)
-        loss = F.mse_loss(x_hat, x)
-        return loss """
+        y_hat = self.model(x)
+        loss = F.binary_cross_entropy_with_logits(y_hat, y)
+        return loss
 
-"""     def configure_optimizers(self):
+    def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        return optimizer """
+        return optimizer
 
 
 class PostureDataSet(torch.utils.data.Dataset):
@@ -51,7 +49,7 @@ class PostureDataSet(torch.utils.data.Dataset):
 
     def __getitem__(self, idx):
         # 0 currently represents okay posture. We will change this later to load from annotation file.
-        return self.images[idx], 0
+        return self.images[idx], torch.tensor([0]).float()
 
 
 weights = ResNet50_Weights.DEFAULT
@@ -59,6 +57,12 @@ weights = ResNet50_Weights.DEFAULT
 model = PostureBot(weights)
 
 dataset = PostureDataSet("data/raw", weights.transforms())
+
+train_loader = torch.utils.data.DataLoader(dataset)
+
+# train model
+trainer = L.Trainer()
+trainer.fit(model=model, train_dataloaders=train_loader)
 
 x = 1
 
