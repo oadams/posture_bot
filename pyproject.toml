@@ -9,7 +9,7 @@ description = "Penalize bad posture."
 readme = "README.md"
 authors = [{ name = "Oliver Adams"}]
 license = { file = "LICENSE" }
-dependencies = ["opencv-python"]
+dependencies = ["opencv-python", "torch", "torchvision", "lightning"]
 requires-python = ">=3.11"
 
 [project.optional-dependencies]
