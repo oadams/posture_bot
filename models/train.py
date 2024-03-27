@@ -10,11 +10,16 @@ class PostureBot(L.LightningModule):
     def __init__(self, weights):
         super().__init__()
         self.model = resnet50(weights=weights)
+        # Replace the final layer with a binary classifier
+        self.model.fc = torch.nn.Linear(self.model.fc.in_features, 1)
         num_params = sum(p.numel() for p in self.model.parameters())
         print(f"The model has {num_params} parameters.")
         print(
             f"Holding the model in memory alone (assuming f32) requires {num_params * 4 / 1024**2:.1f} MB."
         )
+
+    def forward(self, x):
+        return self.model(x)
 
 
 """     def training_step(self, batch, batch_idx):
@@ -45,7 +50,8 @@ class PostureDataSet(torch.utils.data.Dataset):
         return len(self.files)
 
     def __getitem__(self, idx):
-        return self.images[idx]
+        # 0 currently represents okay posture. We will change this later to load from annotation file.
+        return self.images[idx], 0
 
 
 weights = ResNet50_Weights.DEFAULT
@@ -53,6 +59,8 @@ weights = ResNet50_Weights.DEFAULT
 model = PostureBot(weights)
 
 dataset = PostureDataSet("data/raw", weights.transforms())
+
+x = 1
 
 """ # Step 3: Apply inference preprocessing transforms
 batch = preprocess(img).unsqueeze(0)
