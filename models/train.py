@@ -35,12 +35,22 @@ class PostureDataSet(torch.utils.data.Dataset):
         self.files = list(self.root_dir.glob("*.png"))
         # Just load all the files into memory and preprocess them. If the dataset
         # gets too big we can change this later to load on the fly.
-        self.images = [
-            preprocess(read_image(str(file_name))) for file_name in self.files
-        ]
+        self.labels = []
+        self.images = []
+        for file_name in self.root_dir.glob("*.png"):
+            anno_file = file_name.parent / f"{file_name.stem}.txt"
+            if anno_file.exists():
+                with open(anno_file) as f:
+                    label = f.read().strip()
+                    # 'b' for bad posture. Otherwise we say it's okay.
+                    if label == "b":
+                        self.labels.append([1])
+                    else:
+                        self.labels.append([0])
+                self.images.append(preprocess(read_image(str(file_name))))
 
     def __len__(self):
-        return len(self.files)
+        return len(self.images)
 
     def __getitem__(self, idx):
         # 0 currently represents okay posture. We will change this later to load from annotation file.
