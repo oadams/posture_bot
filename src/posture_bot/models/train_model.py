@@ -14,6 +14,7 @@ class PostureBot(L.LightningModule):
         # Replace the final layer with a binary classifier
         self.model.fc = torch.nn.Linear(self.model.fc.in_features, 1)
         self.train_losses = []
+        self.save_hyperparameters()
 
     def forward(self, x):
         return self.model(x)
@@ -65,26 +66,17 @@ class PostureDataSet(torch.utils.data.Dataset):
         return self.images[idx], torch.tensor([0]).float()
 
 
-weights = ResNet50_Weights.DEFAULT
+if __name__ == "__main__":
+    weights = ResNet50_Weights.DEFAULT
 
-model = PostureBot(weights)
+    model = PostureBot(weights)
 
-dataset = PostureDataSet("data/raw", weights.transforms())
+    dataset = PostureDataSet("data/raw", weights.transforms())
 
-train_loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
+    train_loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
 
-# train model
-trainer = L.Trainer(max_epochs=10)
-trainer.fit(model=model, train_dataloaders=train_loader)
+    # train model
+    trainer = L.Trainer(max_epochs=10)
+    trainer.fit(model=model, train_dataloaders=train_loader)
 
-x = 1
-
-""" # Step 3: Apply inference preprocessing transforms
-batch = preprocess(img).unsqueeze(0)
-
-# Step 4: Use the model and print the predicted category
-prediction = model(batch).squeeze(0).softmax(0)
-class_id = prediction.argmax().item()
-score = prediction[class_id].item()
-category_name = weights.meta["categories"][class_id]
-print(f"{category_name}: {100 * score:.1f}%") """
+    x = 1
