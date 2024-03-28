@@ -27,10 +27,10 @@ class PostureBot(L.LightningModule):
         self.train_losses.append(loss)
         return loss
 
-    def on_train_epoch_end(self, outputs):
+    def on_train_epoch_end(self, *arg, **kwargs):
         avg_loss = torch.stack(self.train_losses).mean()
         self.log("avg_train_loss", avg_loss)
-        self.train_losse.clear()
+        self.train_losses.clear()
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
