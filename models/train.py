@@ -13,11 +13,6 @@ class PostureBot(L.LightningModule):
         self.model = resnet50(weights=weights)
         # Replace the final layer with a binary classifier
         self.model.fc = torch.nn.Linear(self.model.fc.in_features, 1)
-        num_params = sum(p.numel() for p in self.model.parameters())
-        print(f"The model has {num_params} parameters.")
-        print(
-            f"Holding the model in memory alone (assuming f32) requires {num_params * 4 / 1024**2:.1f} MB."
-        )
 
     def forward(self, x):
         return self.model(x)
@@ -58,10 +53,10 @@ model = PostureBot(weights)
 
 dataset = PostureDataSet("data/raw", weights.transforms())
 
-train_loader = torch.utils.data.DataLoader(dataset)
+train_loader = torch.utils.data.DataLoader(dataset, batch_size=32, shuffle=True)
 
 # train model
-trainer = L.Trainer()
+trainer = L.Trainer(max_epochs=3)
 trainer.fit(model=model, train_dataloaders=train_loader)
 
 x = 1
